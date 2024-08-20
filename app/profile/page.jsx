@@ -40,7 +40,7 @@ const User = () => {
     window.location.href = "/login";
   };
 
-  console.log(isDriving, journyData[0]?.status === "Drive Started");
+
   const DEFAULT_IMAGES = [
     "https://thumbs.dreamstime.com/z/elegant-super-car-black-white-line-art-vector-car-left-front-side-view-drawing-car-black-white-car-elegant-super-car-black-304888571.jpg",
     "https://as1.ftcdn.net/v2/jpg/02/01/86/18/1000_F_201861875_R1Qvq0ipQvtvEmLnrVr7xceverSY5ufN.jpg",
@@ -49,6 +49,13 @@ const User = () => {
     "https://media.istockphoto.com/id/1346703769/vector/isolated-speedometer-car-mileage-measuring-kilometers-circle-speed-control-accelerating.jpg?s=1024x1024&w=is&k=20&c=Ql4N6GOlI0NBQwmDW2USV5rOBW8rkruuADuS8LsbUVQ=",
     "https://www.shutterstock.com/image-vector/give-key-hand-icon-rental-260nw-2051087729.jpg",
   ];
+
+    const convertTo12HourFormat = (time24) => {
+      const [hours, minutes] = time24.split(":").map(Number);
+      const period = hours >= 12 ? "PM" : "AM";
+      const hours12 = hours % 12 || 12; // Convert 0 hours to 12
+      return `${hours12}:${minutes.toString().padStart(2, "0")} ${period}`;
+    };
 
   const handleFileChange = (index, event) => {
     const file = event.target.files?.[0] || null;
@@ -731,6 +738,65 @@ const User = () => {
               </div>
             </div>
           )}
+
+          <div className={`${!isDriving ? " mt-20" : " mt-8  "} pb-20 mb-10`}>
+            <p className="pb-2 text-xl text-indigo-500 ">
+              Drives History{" "}
+              <span className="text-xs text-gray-500 ">( last 5 )</span>
+            </p>
+
+            {journyData?.length > 0 ? (
+              <div className="flex flex-col gap-4 pt-4 md:flex-wrap md:flex-row ">
+                {journyData?.map((journey, index) => (
+                  <div
+                    key={index}
+                    className="max-h-[50vh] p-4  bg-white border rounded-lg shadow-sm shadow-black/50 relative max-w-sm"
+                  >
+                    <div className="flex justify-between py-2 mb-5 bg-white border-b md:flex-row">
+                      <p className="text-indigo-500 ">
+                        {journey?.vehicleNumber}
+                      </p>
+
+                      <p className="text-sm text-indigo-500">
+                        {/* <strong>Date:</strong>{" "}  */}
+                        {journey.date}
+                      </p>
+                    </div>
+
+                    {journey.location.map((loc, index) => (
+                      <div key={index} className="flex gap-1 -mt-1 ">
+                        <div className="flex flex-col items-center justify-start w-4 pt-2">
+                          <div
+                            className={`w-2 h-2 rounded-full ${
+                              index === 0
+                                ? "bg-green-500"
+                                : index === 1
+                                ? "bg-blue-500"
+                                : "bg-red-500"
+                            }`}
+                          />
+                          {index < 2 && (
+                            <div className="w-1 h-full border-r-2 border-r-indigo-500 border-dashed -ml-0.5 " />
+                          )}
+                        </div>
+                        <div className="">
+                          <p className="text-indigo-500">
+                            {loc?.detail} -{" "}
+                            {loc?.time ? convertTo12HourFormat(loc.time) : ""}
+                          </p>
+                          <p className="pb-3 text-xs">
+                            {loc.formattedLocation}
+                          </p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="text-gray-500">No recent drive history.</p>
+            )}
+          </div>
         </div>
       </div>
     </main>

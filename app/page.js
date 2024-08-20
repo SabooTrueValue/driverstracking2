@@ -16,7 +16,7 @@ export default function Home() {
 
   return (
     <main>
-      <div className=" w-full min-h-screen bg-[#0D1F2D] flex flex-col justify-end overflow-hidden ">
+      <div className=" w-full min-h-screen bg-[#6C63FF] flex flex-col justify-end overflow-hidden ">
         <video
           src="https://images-saboomaruti-in.s3.ap-south-1.amazonaws.com/nexa/thumbnails/slider_video/Jimny_forward.webm"
           playsInline
@@ -36,7 +36,7 @@ export default function Home() {
             <p className="py-4">Your journey starts here</p>
             <Link
               href={token ? "/profile" : "/login"}
-              className="flex items-center justify-center w-16 h-16 mx-auto mb-4 text-white uppercase bg-[#00668c] rounded-full shadow-sm ring-2 ring-offset-4 ring-[#00678c86] "
+              className="flex items-center justify-center w-16 h-16 mx-auto mb-4 text-white uppercase bg-[#6C63FF] rounded-full shadow-sm ring-2 ring-offset-4 ring-[#6C63FF] "
             >
               <MdOutlineNavigateNext className="text-5xl animate-pulse" />
             </Link>{" "}

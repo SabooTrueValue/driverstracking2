@@ -2,3 +2,25 @@
 @tailwind components;
 @tailwind utilities;
 
+
+/* Chrome, Edge, and Safari */
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+  /* display: fixed; */
+}
+
+*::-webkit-scrollbar-track {
+  /* background: var(--primary); Adjust background color */
+  /* border-radius: 10px; */
+  background: transparent;
+ /* background-color: rgb(230, 230, 230); */
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: rgb(30 64 175);
+  /* background-color: rgb(230, 230, 230); */
+  /* background-color: rgba(220 110 26); */
+  border-radius: 4px;
+  /* border: 2px solid white; */
+}

@@ -40,7 +40,6 @@ const User = () => {
     window.location.href = "/login";
   };
 
-
   const DEFAULT_IMAGES = [
     "https://thumbs.dreamstime.com/z/elegant-super-car-black-white-line-art-vector-car-left-front-side-view-drawing-car-black-white-car-elegant-super-car-black-304888571.jpg",
     "https://as1.ftcdn.net/v2/jpg/02/01/86/18/1000_F_201861875_R1Qvq0ipQvtvEmLnrVr7xceverSY5ufN.jpg",
@@ -50,12 +49,12 @@ const User = () => {
     "https://www.shutterstock.com/image-vector/give-key-hand-icon-rental-260nw-2051087729.jpg",
   ];
 
-    const convertTo12HourFormat = (time24) => {
-      const [hours, minutes] = time24.split(":").map(Number);
-      const period = hours >= 12 ? "PM" : "AM";
-      const hours12 = hours % 12 || 12; // Convert 0 hours to 12
-      return `${hours12}:${minutes.toString().padStart(2, "0")} ${period}`;
-    };
+  const convertTo12HourFormat = (time24) => {
+    const [hours, minutes] = time24.split(":").map(Number);
+    const period = hours >= 12 ? "PM" : "AM";
+    const hours12 = hours % 12 || 12; // Convert 0 hours to 12
+    return `${hours12}:${minutes.toString().padStart(2, "0")} ${period}`;
+  };
 
   const handleFileChange = (index, event) => {
     const file = event.target.files?.[0] || null;
@@ -436,7 +435,7 @@ const User = () => {
   };
 
   return (
-    <main className="w-full min-h-screen bg-[#0D1F2D]">
+    <main className="w-full min-h-screen bg-[#6C63FF]">
       <div className="relative h-full">
         <div className="z-0 flex justify-between w-full px-4 py-5 text-gray-200 min-h-24">
           <div className="">
@@ -459,7 +458,7 @@ const User = () => {
 
             <div
               onClick={handleLogout}
-              className="flex items-center gap-2 px-2 duration-200 md:border rounded cursor-pointer hover:text-white py-0.5 select-none md:px-4 bg-[#00668c] hover:bg-indigo-500"
+              className="flex items-center gap-2 px-2 duration-200 md:border rounded cursor-pointer hover:text-white py-0.5 select-none md:px-4 bg-[#6C63FF] hover:bg-indigo-500 border"
             >
               <span>Logout</span>
               <IoIosLogOut className="text-xl ml-0.5 lg:text-2xl" />

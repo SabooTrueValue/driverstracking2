@@ -45,8 +45,7 @@ const User = () => {
     "https://as1.ftcdn.net/v2/jpg/02/01/86/18/1000_F_201861875_R1Qvq0ipQvtvEmLnrVr7xceverSY5ufN.jpg",
     "https://png.pngtree.com/png-clipart/20230120/original/pngtree-black-car-back-silhouette-clipart-png-image_8923151.png",
     "https://static.vecteezy.com/system/resources/previews/035/838/071/non_2x/car-black-and-white-illustration-vector.jpg",
-    "https://media.istockphoto.com/id/1346703769/vector/isolated-speedometer-car-mileage-measuring-kilometers-circle-speed-control-accelerating.jpg?s=1024x1024&w=is&k=20&c=Ql4N6GOlI0NBQwmDW2USV5rOBW8rkruuADuS8LsbUVQ=",
-    "https://www.shutterstock.com/image-vector/give-key-hand-icon-rental-260nw-2051087729.jpg",
+    "/odometer.webp",
   ];
 
   const convertTo12HourFormat = (time24) => {
@@ -477,7 +476,10 @@ const User = () => {
                 className="w-full max-w-md space-y-6"
               >
                 <div>
-                  <label className="block mb-2" htmlFor="vehicleNumber">
+                  <label
+                    className="block mb-2 text-[#6C63FF]"
+                    htmlFor="vehicleNumber"
+                  >
                     Vehicle Number*
                   </label>
                   <input
@@ -494,7 +496,10 @@ const User = () => {
                   />
                 </div>
                 <div className="relative w-full">
-                  <label className="block mb-2" htmlFor="pickupOrDrop">
+                  <label
+                    className="block mb-2 text-[#6C63FF]"
+                    htmlFor="pickupOrDrop"
+                  >
                     Select Pickup or Drop*
                   </label>
                   <select
@@ -512,7 +517,7 @@ const User = () => {
                 {pickupOrDrop === "Pickup" && (
                   <div className="relative">
                     <label
-                      className="block mb-2 text-sm"
+                      className="block mb-2 text-sm text-[#6C63FF]"
                       htmlFor="modeOfTransport"
                     >
                       Transportation Method*
@@ -539,11 +544,11 @@ const User = () => {
 
                 {pickupOrDrop === "Drop" && (
                   <div className="col-span-2 mb-6">
-                    <p className="mb-2">Upload Vehicle Photo*</p>
+                    <p className="mb-2 text-[#6C63FF]">Upload Vehicle Photo*</p>
                     <div className="grid grid-cols-2 gap-2">
                       {[
-                        "Side view",
                         "Front view",
+                        "Right Side view",
                         "Back view",
                         "Left side view",
                         "Odometer",
@@ -579,7 +584,7 @@ const User = () => {
                               />
                               <button
                                 type="button"
-                                className="flex items-center justify-center w-full gap-2 px-2 py-3 mt-2 text-xs bg-[#71c4ef] border rounded-lg"
+                                className="flex items-center justify-center w-full gap-2 px-2 py-3 mt-2 text-xs bg-[#6C63FF] border rounded-lg text-gray-200"
                               >
                                 <FiCamera className="text-xl" />
                                 {label}
@@ -629,7 +634,7 @@ const User = () => {
                 className="w-full max-w-md space-y-6"
               >
                 <div className="col-span-2 mb-6">
-                  <p className="mb-2">Upload Vehicle Photo*</p>
+                  <p className="mb-2 text-[#6C63FF]">Upload Vehicle Photo*</p>
                   <div className="grid grid-cols-2 gap-2">
                     {["Final delivery to the customer"].map((label, index) => (
                       <div
@@ -661,7 +666,7 @@ const User = () => {
                             />
                             <button
                               type="button"
-                              className="flex items-center justify-center w-full gap-2 px-2 py-3 mt-2 text-xs bg-[#71c4ef] border rounded-lg"
+                              className="flex items-center justify-center w-full gap-2 px-2 py-3 mt-2 text-xs bg-[#6C63FF] border rounded-lg text-gray-200"
                             >
                               <FiCamera className="text-xl" />
                               {label}

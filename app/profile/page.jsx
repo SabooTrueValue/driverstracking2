@@ -97,7 +97,6 @@ const User = () => {
           images: imageUrls,
         });
       } else {
-      
         handleWithoutPermission({
           vehicleNumber: vehicleNumber,
           modeOfTransport: modeOfTransport,
@@ -129,7 +128,6 @@ const User = () => {
     }
   };
 
-  
   const handleSubmit2 = async (event) => {
     event.preventDefault();
     setLoading(true);
@@ -228,6 +226,72 @@ const User = () => {
       setLoading(false);
     }
   };
+  const handleSubmit4 = async (event) => {
+    event.preventDefault();
+    setLoading(true);
+
+    try {
+      const imageUrls = [];
+      const uploadPromises = images.map(async (file, index) => {
+        if (!file) return;
+
+        const storageRef = ref(
+          FirebaseStorage,
+          `journeys/${journyData[0]?.vehicleNumber?.toUpperCase()}/${Date.now()}-${index}`
+        );
+
+        const snapshot = await uploadBytes(storageRef, file);
+        const url = await getDownloadURL(snapshot.ref);
+        // console.log(url);
+        imageUrls.push(url);
+      });
+
+      await Promise.all(uploadPromises);
+
+      handleWithoutPermission({
+        type: "Update",
+        detail: "Reached to showroom",
+        images: imageUrls,
+      });
+      toast.success("Drive started successfully");
+
+      // await addDoc(collection(FirebaseStore, "journeys"), {
+      //   vehicleNumber,
+      //   modeOfTransport,
+      //   pickupOrDrop,
+      //   images: imageUrls,
+      //   createdAt: serverTimestamp(),
+      // });
+
+      setVehicleNumber("");
+      setModeOfTransport("");
+      setPickupOrDrop("");
+      setImages(Array(5).fill(null));
+      // console.log(imageUrls);
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to start drive");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleSubmit5 = async (event) => {
+    event.preventDefault();
+    setLoading(true);
+
+    try {
+      handleWithoutPermission({
+        type: "Update",
+        detail: "Drive Ended",
+      });
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to start drive");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleWithoutPermission = async ({
     vehicleNumber,
@@ -260,7 +324,7 @@ const User = () => {
                 date: now.toLocaleDateString(),
               };
               if (type === "Update") {
-                updateJourney({ ...locationData, images });
+                updateJourney({ ...locationData, images, detail });
               } else if (type === "Start" && pickupOrDrop === "Drop") {
                 startJourney({
                   ...locationData,
@@ -451,6 +515,7 @@ const User = () => {
       if (detail === "Drive Ended") {
         const response = await axios.put(`/api/journey`, {
           status: detail,
+          modeOfTransport: modeOfTransport,
           location: {
             formattedLocation,
             lat,
@@ -469,10 +534,34 @@ const User = () => {
         } else {
           toast.error("Failed to update journey. Please try again later.");
         }
+      } else if (detail === "Reached to showroom") {
+        toast.success("Reached to showroom.");
+        const response = await axios.put(`/api/journey`, {
+          status: detail,
+          image: images?.length > 1 ? images : images[0],
+          location: {
+            formattedLocation,
+            lat,
+            lng,
+            detail: "Drive Ended",
+          },
+          journeyId: journyData[0]?._id,
+          pickupCompleted: true,
+        });
+        console.log("API response:", response);
+
+        if (response.data.status === true) {
+          toast.success("Driving status updated successfully.");
+
+          getDriverData();
+          journeyData();
+        } else {
+          toast.error("Failed to update journey. Please try again later.");
+        }
       } else {
         const response = await axios.put(`/api/journey`, {
           status: detail,
-          image: images[0],
+          image: images?.length > 1 ? images : images[0],
           location: {
             formattedLocation,
             lat,
@@ -810,7 +899,7 @@ const User = () => {
               </p>
               <p className="pb-2 text-2xl ">{journyData[0]?.vehicleNumber}</p>
               <form
-                // onSubmit={handleSubmit2}
+                onSubmit={handleSubmit3}
                 className="w-full max-w-md space-y-6"
               >
                 <div className="col-span-2 mb-6">
@@ -892,42 +981,152 @@ const User = () => {
                 </div>
               </form>
             </div>
+          ) : isDriving &&
+            journyData[0]?.status === "Picked up" &&
+            journyData[0]?.journeyType === "Pickup" ? (
+            <div className="w-full">
+              <p className="pb-2 text-xl text-indigo-500">
+                End the {journyData[0]?.journeyType} Journey For,
+              </p>
+              <p className="pb-2 text-2xl ">{journyData[0]?.vehicleNumber}</p>
+              <form
+                onSubmit={handleSubmit4}
+                className="w-full max-w-md space-y-6"
+              >
+                <div className="col-span-2 mb-6">
+                  <p className="mb-2 text-[#6C63FF]">Upload Vehicle Photo*</p>
+                  <div className="grid grid-cols-2 gap-2">
+                    {["Final delivery to serivce center"].map(
+                      (label, index) => (
+                        <div
+                          key={index}
+                          className={`relative flex items-center space-x-4 ${
+                            index === 0 ? "col-span-2" : ""
+                          }`}
+                        >
+                          <div
+                            className={`w-full flex items-center justify-center border border-gray-300 rounded-lg overflow-hidden max-w-xl`}
+                          >
+                            <img
+                              src={getImagePreviewUrl(index)}
+                              alt={label}
+                              className="object-cover w-full h-full"
+                            />
+                          </div>
+                          <div className="absolute top-0 left-0 flex-1">
+                            <div className="relative">
+                              <input
+                                type="file"
+                                accept="image/*"
+                                capture="environment" // 'environment' for rear camera, 'user' for front camera
+                                onChange={(event) =>
+                                  handleFileChange(index, event)
+                                }
+                                className="absolute inset-0 opacity-0 cursor-pointer"
+                                required
+                              />
+                              <button
+                                type="button"
+                                className="flex items-center justify-center w-full gap-2 px-2 py-3 mt-2 text-xs bg-[#6C63FF] border rounded-lg text-gray-200"
+                              >
+                                <FiCamera className="text-xl" />
+                                {label}
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      )
+                    )}
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-between w-full col-span-2 px-4 ">
+                  <button
+                    className={`w-full h-full p-2.5 text-white rounded-lg shadow-black/50 max-w-md mx-auto text-lg text-center ${
+                      loading
+                        ? "bg-gray-400 cursor-not-allowed"
+                        : "bg-red-700 shadow-xl"
+                    }`}
+                    type="submit"
+                    disabled={loading}
+                  >
+                    {loading ? (
+                      <p className="flex items-center justify-center gap-2">
+                        <span className="">Ending.. </span>
+                        <TbLoader3
+                          color="white"
+                          size={30}
+                          className="animate-spin"
+                        />
+                      </p>
+                    ) : (
+                      "End Now"
+                    )}
+                  </button>
+                </div>
+              </form>
+            </div>
           ) : (
             <div className="w-full">
               <p className="pb-2 text-xl text-indigo-500">
                 Drive completed for
               </p>
               <p className="pb-2 text-2xl ">{journyData[0]?.vehicleNumber}</p>
-              <div className="z-10 flex w-full gap-4 px-4 bottom-4">
-                <button
-                  type="button"
-                  disabled={loading}
-                  onClick={() =>
-                    handleWithoutPermission({
-                      type: "Update",
-                      detail: "Drive Ended",
-                    })
-                  }
-                  className={`w-full h-full p-3 text-white  rounded-lg  shadow-black/50 max-w-md mx-auto text-lg  ${
-                    loading
-                      ? "bg-gray-400 cursor-not-allowed "
-                      : "bg-red-500 shadow-xl"
-                  }`}
-                >
-                  {loading ? (
-                    <p className="flex items-center justify-center gap-2">
-                      <span className="">Ending.. </span>
-                      <TbLoader3
-                        color="white"
-                        size={30}
-                        className=" animate-spin"
-                      />
-                    </p>
-                  ) : (
-                    "Drive Ended"
-                  )}
-                </button>
-              </div>
+
+              <form
+                onSubmit={handleSubmit5}
+                className="w-full max-w-md space-y-6"
+              >
+                <div className="relative">
+                  <label
+                    className="block mb-2 text-sm text-[#6C63FF]"
+                    htmlFor="modeOfTransport"
+                  >
+                    Transportation Method*
+                  </label>
+                  <select
+                    className="w-full py-2.5 leading-tight focus:outline-none focus:shadow-outline bg-none border-b-2 text-sm bg-transparent border-b-black focus:bg-transparent uppercase"
+                    id="modeOfTransport"
+                    onChange={(e) => setModeOfTransport(e.target.value)}
+                    value={modeOfTransport}
+                    required
+                  >
+                    <option value="" label="" disabled />
+                    <option value="Auto" label="Auto" />
+                    <option value="Bike" label="Bike" />
+                    <option value="Car" label="Car" />
+                    <option value="Bus" label="Bus" />
+                    <option value="Metro" label="Metro" />
+                    <option value="Train" label="Train" />
+                    <option value="Walk" label="Walk" />
+                    <option value="Other" label="Other" />
+                  </select>
+                </div>{" "}
+                <div className="z-10 flex w-full gap-4 px-4 bottom-4">
+                  <button
+                    type="submit"
+                    disabled={loading}
+                    className={`w-full h-full p-3 text-white  rounded-lg  shadow-black/50 max-w-md  text-lg  ${
+                      loading
+                        ? "bg-gray-400 cursor-not-allowed "
+                        : "bg-red-500 shadow-xl"
+                    }`}
+                  >
+                    {loading ? (
+                      <p className="flex items-center justify-center gap-2">
+                        <span className="">Ending.. </span>
+                        <TbLoader3
+                          color="white"
+                          size={30}
+                          className=" animate-spin"
+                        />
+                      </p>
+                    ) : (
+                      "Drive Ended"
+                    )}
+                  </button>
+                </div>
+              </form>
             </div>
           )}
 

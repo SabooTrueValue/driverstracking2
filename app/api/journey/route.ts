@@ -35,7 +35,6 @@ export async function POST(req: NextRequest, res: NextResponse) {
     data.location[0].time = time;
     data.location[0].date = date;
 
-    
     const driverId = cookies().get("_id")?.value;
 
     //check if user exists
@@ -120,47 +119,96 @@ export async function PUT(req: NextRequest) {
     };
 
     // Determine the update operation based on location detail
-    const update = {
-      $push: {
-        location: locationData,
-        ...(data.image ? { images: data.image } : {}), // Only push images if they exist
-      },
-      $set: {
-        status: data.location.detail,
-      },
-    };
+    // const update = {}
+    // if (data?.modeOfTransport){
 
-    const updatedJourney = await Journey.findOneAndUpdate(
-      { _id: journeyId },
-      update,
-      { new: true }
-    );
+    // }
+    if (data?.modeOfTransport) {
+      const update = {
+        $push: {
+          location: locationData,
+          ...(data.image ? { images: data.image } : {}), // Only push images if they exist
+        },
+        $set: {
+          status: data.location.detail,
+          modeOfTransport: data.modeOfTransport,
+        },
+      };
 
-    if (data.location.detail === "Drive Ended") {
-      const driverId = cookies().get("_id")?.value;
-
-      await Driver.updateOne(
-        { _id: driverId },
-        { $set: { isDriving: false } },
-        { new: true, upsert: true }
+      const updatedJourney = await Journey.findOneAndUpdate(
+        { _id: journeyId },
+        update,
+        { new: true }
       );
-    }
 
-    if (!updatedJourney) {
+      if (data.location.detail === "Drive Ended") {
+        const driverId = cookies().get("_id")?.value;
+
+        await Driver.updateOne(
+          { _id: driverId },
+          { $set: { isDriving: false } },
+          { new: true, upsert: true }
+        );
+      }
+
+      if (!updatedJourney) {
+        return NextResponse.json(
+          { message: "Journey not found" },
+          { status: 404 } // Changed status to 404 as it's more appropriate for not found
+        );
+      }
+
       return NextResponse.json(
-        { message: "Journey not found" },
-        { status: 404 } // Changed status to 404 as it's more appropriate for not found
+        {
+          status: true,
+          data: updatedJourney,
+          message: "Journey updated successfully",
+        },
+        { status: 200 } // Changed status to 200 for successful update
+      );
+    } else {
+      const update = {
+        $push: {
+          location: locationData,
+          ...(data.image ? { images: data.image } : {}), // Only push images if they exist
+        },
+        $set: {
+          status: data.location.detail,
+        },
+      };
+
+      const updatedJourney = await Journey.findOneAndUpdate(
+        { _id: journeyId },
+        update,
+        { new: true }
+      );
+
+      if (data.location.detail === "Drive Ended") {
+        const driverId = cookies().get("_id")?.value;
+
+        await Driver.updateOne(
+          { _id: driverId },
+          { $set: { isDriving: false } },
+          { new: true, upsert: true }
+        );
+      }
+
+      if (!updatedJourney) {
+        return NextResponse.json(
+          { message: "Journey not found" },
+          { status: 404 } // Changed status to 404 as it's more appropriate for not found
+        );
+      }
+
+      return NextResponse.json(
+        {
+          status: true,
+          data: updatedJourney,
+          message: "Journey updated successfully",
+        },
+        { status: 200 } // Changed status to 200 for successful update
       );
     }
-
-    return NextResponse.json(
-      {
-        status: true,
-        data: updatedJourney,
-        message: "Journey updated successfully",
-      },
-      { status: 200 } // Changed status to 200 for successful update
-    );
   } catch (err: any) {
     console.error(err.message);
     return NextResponse.json({ message: err.message }, { status: 500 });

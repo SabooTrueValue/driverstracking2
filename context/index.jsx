@@ -1,6 +1,7 @@
 "use client";
 import axios from "axios";
 import { createContext, useContext, useEffect, useState } from "react";
+import Cookies from "js-cookie";
 
 const AppContext = createContext();
 
@@ -8,9 +9,18 @@ export function AppWrapper({ children }) {
   const [driverData, setDriverData] = useState(null);
   const [journyData, setJournyData] = useState([]);
   const [isDriving, setIsDriving] = useState(false);
+
   useEffect(() => {
-    getDriverData();
-    journeyData();
+    const token = Cookies.get("token");
+    const isAdmin = Cookies.get("isAdmin");
+    if (token) {
+      getDriverData();
+      journeyData();
+    }
+    if (window.location.pathname === "/admin" && !isAdmin) {
+      
+      window.location.href = "/login";
+    }
   }, []);
 
   useEffect(() => {
@@ -26,7 +36,10 @@ export function AppWrapper({ children }) {
       }
     };
 
-    fetchData(); // Call the async function
+    const token = Cookies.get("token");
+    if (token) {
+      fetchData();
+    }
   }, []); // Dependency array
 
   const getDriverData = async () => {

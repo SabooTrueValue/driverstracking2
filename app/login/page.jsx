@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { VscEye, VscEyeClosed } from "react-icons/vsc";
 import { useFormik, FormikHelpers } from "formik";
 import * as Yup from "yup";
@@ -9,6 +9,7 @@ import Image from "next/image";
 // import { useRouter } from "next/navigation";
 import { useAppContext } from "@/context";
 import { TbLoader3 } from "react-icons/tb";
+import Cookies from "js-cookie";
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -69,6 +70,14 @@ const Login = () => {
       }
     },
   });
+
+  useEffect(() => {
+    Cookies.remove("token");
+    Cookies.remove("driverId");
+    Cookies.remove("_id");
+    Cookies.remove("journeyId");
+    Cookies.remove("isAdmin");
+  }, []);
 
   return (
     <main className="w-full h-screen bg-[#6C63FF] max-h-screen overflow-hidden">

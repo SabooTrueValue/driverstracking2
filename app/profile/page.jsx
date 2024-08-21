@@ -97,7 +97,7 @@ const User = () => {
           images: imageUrls,
         });
       } else {
-        toast.success("testing 1");
+      
         handleWithoutPermission({
           vehicleNumber: vehicleNumber,
           modeOfTransport: modeOfTransport,
@@ -128,6 +128,8 @@ const User = () => {
       setLoading(false);
     }
   };
+
+  
   const handleSubmit2 = async (event) => {
     event.preventDefault();
     setLoading(true);
@@ -153,6 +155,55 @@ const User = () => {
       handleWithoutPermission({
         type: "Update",
         detail: "Dropped",
+        images: imageUrls,
+      });
+      toast.success("Drive started successfully");
+
+      // await addDoc(collection(FirebaseStore, "journeys"), {
+      //   vehicleNumber,
+      //   modeOfTransport,
+      //   pickupOrDrop,
+      //   images: imageUrls,
+      //   createdAt: serverTimestamp(),
+      // });
+
+      setVehicleNumber("");
+      setModeOfTransport("");
+      setPickupOrDrop("");
+      setImages(Array(5).fill(null));
+      // console.log(imageUrls);
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to start drive");
+    } finally {
+      setLoading(false);
+    }
+  };
+  const handleSubmit3 = async (event) => {
+    event.preventDefault();
+    setLoading(true);
+
+    try {
+      const imageUrls = [];
+      const uploadPromises = images.map(async (file, index) => {
+        if (!file) return;
+
+        const storageRef = ref(
+          FirebaseStorage,
+          `journeys/${journyData[0]?.vehicleNumber?.toUpperCase()}/${Date.now()}-${index}`
+        );
+
+        const snapshot = await uploadBytes(storageRef, file);
+        const url = await getDownloadURL(snapshot.ref);
+        // console.log(url);
+        imageUrls.push(url);
+      });
+
+      await Promise.all(uploadPromises);
+
+      handleWithoutPermission({
+        type: "Update",
+        detail: "Picked up",
         images: imageUrls,
       });
       toast.success("Drive started successfully");
@@ -210,12 +261,18 @@ const User = () => {
               };
               if (type === "Update") {
                 updateJourney({ ...locationData, images });
-              } else if (type === "Start") {
+              } else if (type === "Start" && pickupOrDrop === "Drop") {
                 startJourney({
                   ...locationData,
                   vehicleNumber,
                   modeOfTransport,
                   images,
+                });
+              } else if (type === "Start" && pickupOrDrop === "Pickup") {
+                startJourney({
+                  ...locationData,
+                  vehicleNumber,
+                  modeOfTransport,
                 });
               }
               //  else if (type === "End") {
@@ -251,12 +308,18 @@ const User = () => {
 
               if (type === "Update") {
                 updateJourney(locationData, images);
-              } else if (type === "Start") {
+              } else if (type === "Start" && pickupOrDrop === "Drop") {
                 startJourney({
                   ...locationData,
                   vehicleNumber,
                   modeOfTransport,
                   images,
+                });
+              } else if (type === "Start" && pickupOrDrop === "Pickup") {
+                startJourney({
+                  ...locationData,
+                  vehicleNumber,
+                  modeOfTransport,
                 });
               }
               // else if (type === "End") {
@@ -297,26 +360,64 @@ const User = () => {
     // }
 
     try {
-      const response = await axios.post("/api/journey", {
-        driversId: driverData._id,
-        employeeId: driverData.employeeId,
-        driverName: driverData.name,
-        driverPhone: driverData.phone,
-        journeyType: pickupOrDrop,
-        images: images,
+      if (pickupOrDrop === "Drop") {
+        const response = await axios.post("/api/journey", {
+          driversId: driverData._id,
+          employeeId: driverData.employeeId,
+          driverName: driverData.name,
+          driverPhone: driverData.phone,
+          journeyType: pickupOrDrop,
+          images: images,
 
-        vehicleNumber: vehicleNumber?.toUpperCase(),
-        modeOfTransport: modeOfTransport,
-        status: "Drive Started",
-        location: [
-          {
-            formattedLocation,
-            lat,
-            lng,
-            detail: "Drive Started",
-          },
-        ],
-      });
+          vehicleNumber: vehicleNumber?.toUpperCase(),
+          modeOfTransport: modeOfTransport,
+          status: "Drive Started",
+          location: [
+            {
+              formattedLocation,
+              lat,
+              lng,
+              detail: "Drive Started",
+            },
+          ],
+        });
+
+        console.log("API response:", response);
+
+        if (response.data.status === true) {
+          toast.success("Journey started successfully.");
+        } else {
+          toast.error("Failed to start journey. Please try again later.");
+        }
+      } else {
+        const response = await axios.post("/api/journey", {
+          driversId: driverData._id,
+          employeeId: driverData.employeeId,
+          driverName: driverData.name,
+          driverPhone: driverData.phone,
+          journeyType: pickupOrDrop,
+
+          vehicleNumber: vehicleNumber?.toUpperCase(),
+          modeOfTransport: modeOfTransport,
+          status: "Drive Started",
+          location: [
+            {
+              formattedLocation,
+              lat,
+              lng,
+              detail: "Drive Started",
+            },
+          ],
+        });
+
+        console.log("API response:", response);
+
+        if (response.data.status === true) {
+          toast.success("Journey started successfully.");
+        } else {
+          toast.error("Failed to start journey. Please try again later.");
+        }
+      }
 
       setDriverData({
         ...driverData,
@@ -329,14 +430,6 @@ const User = () => {
       setIsDriving(true);
 
       // localStorage.setItem("journeyId", response?.data?.data._id);
-
-      console.log("API response:", response);
-
-      if (response.data.status === true) {
-        toast.success("Journey started successfully.");
-      } else {
-        toast.error("Failed to start journey. Please try again later.");
-      }
     } catch (error) {
       toast.error("Failed to start journey. Please try again later.");
       console.error("Error starting journey:", error);
@@ -570,8 +663,8 @@ const User = () => {
                               className="object-cover w-full h-full"
                             />
                           </div>
-                          <div className="absolute top-0 left-0 flex-1">
-                            <div className="relative">
+                          <div className="absolute top-0 left-0 w-full h-full">
+                            <div className="relative w-full h-full ">
                               <input
                                 type="file"
                                 accept="image/*"
@@ -584,10 +677,10 @@ const User = () => {
                               />
                               <button
                                 type="button"
-                                className="flex items-center justify-center w-full gap-2 px-2 py-3 mt-2 text-xs bg-[#6C63FF] border rounded-lg text-gray-200"
+                                className="flex items-center justify-center w-min gap-2 px-2 py-3 mt-2 text-xs bg-[#6b63ff] border rounded-lg text-white "
                               >
                                 <FiCamera className="text-xl" />
-                                {label}
+                                {/* {label} */}
                               </button>
                             </div>
                           </div>
@@ -598,32 +691,36 @@ const User = () => {
                 )}
 
                 <div className="flex items-center justify-between w-full col-span-2 px-4 ">
-                  <button
-                    className={`w-full h-full p-2.5 text-white rounded-lg shadow-black/50 max-w-md mx-auto text-lg text-center ${
-                      loading
-                        ? "bg-gray-400 cursor-not-allowed"
-                        : "bg-green-700 shadow-xl"
-                    }`}
-                    type="submit"
-                    disabled={loading}
-                  >
-                    {loading ? (
-                      <p className="flex items-center justify-center gap-2">
-                        <span className="">Starting.. </span>
-                        <TbLoader3
-                          color="white"
-                          size={30}
-                          className="animate-spin"
-                        />
-                      </p>
-                    ) : (
-                      "Start Drive Now"
-                    )}
-                  </button>
+                  {driverData?.name?.length > 0 && (
+                    <button
+                      className={`w-full h-full p-2.5 text-white rounded-lg shadow-black/50 max-w-md mx-auto text-lg text-center ${
+                        loading
+                          ? "bg-gray-400 cursor-not-allowed"
+                          : "bg-green-700 shadow-xl"
+                      }`}
+                      type="submit"
+                      disabled={loading}
+                    >
+                      {loading ? (
+                        <p className="flex items-center justify-center gap-2">
+                          <span className="">Starting.. </span>
+                          <TbLoader3
+                            color="white"
+                            size={30}
+                            className="animate-spin"
+                          />
+                        </p>
+                      ) : (
+                        "Start Drive Now"
+                      )}
+                    </button>
+                  )}
                 </div>
               </form>
             </div>
-          ) : isDriving && journyData[0]?.status === "Drive Started" ? (
+          ) : isDriving &&
+            journyData[0]?.status === "Drive Started" &&
+            journyData[0]?.journeyType === "Drop" ? (
             <div className="w-full">
               <p className="pb-2 text-xl text-indigo-500">
                 Ongoing {journyData[0]?.journeyType} Journey For,
@@ -670,6 +767,97 @@ const User = () => {
                             >
                               <FiCamera className="text-xl" />
                               {label}
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-between w-full col-span-2 px-4 ">
+                  <button
+                    className={`w-full h-full p-2.5 text-white rounded-lg shadow-black/50 max-w-md mx-auto text-lg text-center ${
+                      loading
+                        ? "bg-gray-400 cursor-not-allowed"
+                        : "bg-green-700 shadow-xl"
+                    }`}
+                    type="submit"
+                    disabled={loading}
+                  >
+                    {loading ? (
+                      <p className="flex items-center justify-center gap-2">
+                        <span className="">Droping.. </span>
+                        <TbLoader3
+                          color="white"
+                          size={30}
+                          className="animate-spin"
+                        />
+                      </p>
+                    ) : (
+                      "Drop Now"
+                    )}
+                  </button>
+                </div>
+              </form>
+            </div>
+          ) : isDriving &&
+            journyData[0]?.status === "Drive Started" &&
+            journyData[0]?.journeyType === "Pickup" ? (
+            <div className="w-full">
+              <p className="pb-2 text-xl text-indigo-500">
+                Ongoing {journyData[0]?.journeyType} Journey For,
+              </p>
+              <p className="pb-2 text-2xl ">{journyData[0]?.vehicleNumber}</p>
+              <form
+                // onSubmit={handleSubmit2}
+                className="w-full max-w-md space-y-6"
+              >
+                <div className="col-span-2 mb-6">
+                  <p className="mb-2 text-[#6C63FF]">Upload Vehicle Photo*</p>
+                  <div className="grid grid-cols-2 gap-2">
+                    {[
+                      "Front view",
+                      "Right Side view",
+                      "Back view",
+                      "Left side view",
+                      "Odometer",
+                    ].map((label, index) => (
+                      <div
+                        key={index}
+                        className={`relative flex items-center space-x-4 ${
+                          index === 0 ? "col-span-2" : ""
+                        }`}
+                      >
+                        <div
+                          className={`w-full flex items-center justify-center border border-gray-300 rounded-lg overflow-hidden ${
+                            index === 0 ? "h-40" : "h-32"
+                          }`}
+                        >
+                          <img
+                            src={getImagePreviewUrl(index)}
+                            alt={label}
+                            className="object-cover w-full h-full"
+                          />
+                        </div>
+                        <div className="absolute top-0 left-0 w-full h-full">
+                          <div className="relative w-full h-full ">
+                            <input
+                              type="file"
+                              accept="image/*"
+                              capture="environment" // 'environment' for rear camera, 'user' for front camera
+                              onChange={(event) =>
+                                handleFileChange(index, event)
+                              }
+                              className="absolute inset-0 opacity-0 cursor-pointer"
+                              required
+                            />
+                            <button
+                              type="button"
+                              className="flex items-center justify-center w-min gap-2 px-2 py-3 mt-2 text-xs bg-[#6b63ff] border rounded-lg text-white "
+                            >
+                              <FiCamera className="text-xl" />
+                              {/* {label} */}
                             </button>
                           </div>
                         </div>

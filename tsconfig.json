@@ -26,7 +26,7 @@
     ".next/types/**/*.ts",
     "**/*.ts",
     "**/*.tsx"
-, "components/AddNewDriver.tsx"  ],
+, "components/AddNewDriver.tsx", "middleware.ts"  ],
    
   "exclude": [
     "node_modules"

@@ -43,7 +43,7 @@ const User = () => {
   const DEFAULT_IMAGES = [
     "/Front view.webp",
     "/right side view.webp",
-    "/Back view.webp",
+    "/back view.webp",
     "/left side view.webp",
     "/odometer.webp",
   ];

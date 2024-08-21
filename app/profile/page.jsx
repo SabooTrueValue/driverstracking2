@@ -884,7 +884,7 @@ const User = () => {
                         />
                       </p>
                     ) : (
-                      "Drop Now"
+                      "Handover Now"
                     )}
                   </button>
                 </div>
@@ -967,7 +967,7 @@ const User = () => {
                   >
                     {loading ? (
                       <p className="flex items-center justify-center gap-2">
-                        <span className="">Droping.. </span>
+                        <span className="">Picking up.. </span>
                         <TbLoader3
                           color="white"
                           size={30}
@@ -975,7 +975,7 @@ const User = () => {
                         />
                       </p>
                     ) : (
-                      "Drop Now"
+                      "Pickup Now"
                     )}
                   </button>
                 </div>

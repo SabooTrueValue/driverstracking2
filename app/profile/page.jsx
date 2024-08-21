@@ -41,10 +41,10 @@ const User = () => {
   };
 
   const DEFAULT_IMAGES = [
-    "https://thumbs.dreamstime.com/z/elegant-super-car-black-white-line-art-vector-car-left-front-side-view-drawing-car-black-white-car-elegant-super-car-black-304888571.jpg",
-    "https://as1.ftcdn.net/v2/jpg/02/01/86/18/1000_F_201861875_R1Qvq0ipQvtvEmLnrVr7xceverSY5ufN.jpg",
-    "https://png.pngtree.com/png-clipart/20230120/original/pngtree-black-car-back-silhouette-clipart-png-image_8923151.png",
-    "https://static.vecteezy.com/system/resources/previews/035/838/071/non_2x/car-black-and-white-illustration-vector.jpg",
+    "/Front view.webp",
+    "/right side view.webp",
+    "/Back view.webp",
+    "/left side view.webp",
     "/odometer.webp",
   ];
 

@@ -649,7 +649,14 @@ const User = () => {
         <div className="w-full h-full px-4 py-4 pt-10 bg-[#f5f4f1] md:p-8 rounded-t-2xl min-h-[calc(100vh-64px)]">
           {!isDriving ? (
             <div className="w-full">
-              <p className="text-2xl">Start New Drive</p>
+              <p className="text-2xl font-bold">
+                కొత్త డ్రైవ్‌ను ప్రారంభించండి
+              </p>
+              <p className="pb-2 text-sm">
+                డ్రైవింగ్ ప్రారంభించడానికి వాహనం నంబర్ & ప్రయాణ విధానాన్ని నమోదు
+                చేయండి.
+              </p>
+              <p className="text-xl">Start New Drive</p>
               <p className="pb-6 text-sm">
                 Enter vehicle number & mode of travel to start drive.
               </p>
@@ -659,10 +666,10 @@ const User = () => {
               >
                 <div>
                   <label
-                    className="block mb-2 text-[#6C63FF]"
+                    className="block mb-2 text-[#6C63FF] font-bold"
                     htmlFor="vehicleNumber"
                   >
-                    Vehicle Number*
+                    కారు నంబర్ <br /> Vehicle Number*
                   </label>
                   <input
                     className="appearance-none w-full py-2.5 leading-tight focus:outline-none focus:shadow-outline bg-none border-b-2 text-sm bg-transparent border-b-black focus:bg-transparent uppercase"
@@ -679,31 +686,40 @@ const User = () => {
                 </div>
                 <div className="relative w-full">
                   <label
-                    className="block mb-2 text-[#6C63FF]"
+                    className="block mb-2 text-[#6C63FF] font-bold"
                     htmlFor="pickupOrDrop"
                   >
-                    Select Pickup or Drop*
+                    పికప్ లేదా డ్రాప్ ఎంచుకోండి <br /> Select Pickup or Drop*
                   </label>
                   <select
-                    className="w-full py-2.5 leading-tight focus:outline-none focus:shadow-outline bg-none border-b-2 text-sm bg-transparent border-b-black focus:bg-transparent uppercase"
+                    className="w-full py-2.5 leading-tight focus:outline-none focus:shadow-outline bg-none border-b-2 text-sm bg-transparent border-b-black focus:bg-transparent uppercase "
                     id="pickupOrDrop"
                     required
                     onChange={(e) => setPickupOrDrop(e.target.value)}
                     value={pickupOrDrop}
                   >
                     <option value="" label="" disabled />
-                    <option value="Pickup" label="Pickup" />
-                    <option value="Drop" label="Drop" />
+                    <option
+                      value="Pickup"
+                      label="పికప్ Pickup "
+                      className="font-bold"
+                    />
+                    <option
+                      value="Drop"
+                      label="డ్రాప్ Drop"
+                      className="font-bold"
+                    />
                   </select>
                 </div>
                 {pickupOrDrop === "Pickup" && (
                   <div className="relative">
                     <label
-                      className="block mb-2 text-sm text-[#6C63FF]"
+                      className="block mb-2 text-[#6C63FF] font-bold"
                       htmlFor="modeOfTransport"
                     >
-                      Transportation Method*
+                      ఎలా వెళ్తున్నారు <br /> Transportation Method*
                     </label>
+                   
                     <select
                       className="w-full py-2.5 leading-tight focus:outline-none focus:shadow-outline bg-none border-b-2 text-sm bg-transparent border-b-black focus:bg-transparent uppercase"
                       id="modeOfTransport"
@@ -726,6 +742,7 @@ const User = () => {
 
                 {pickupOrDrop === "Drop" && (
                   <div className="col-span-2 mb-6">
+                    <p className="font-bold">కార్ ఫోటోను అప్‌లోడ్ చేయండి**</p>
                     <p className="mb-2 text-[#6C63FF]">Upload Vehicle Photo*</p>
                     <div className="grid grid-cols-2 gap-2">
                       {[
@@ -800,7 +817,10 @@ const User = () => {
                           />
                         </p>
                       ) : (
-                        "Start Drive Now"
+                        <>
+                          <p>డ్రైవ్ ని ప్రారంభించండి</p>
+                          <p> Start Drive Now</p>
+                        </>
                       )}
                     </button>
                   )}
@@ -811,15 +831,16 @@ const User = () => {
             journyData[0]?.status === "Drive Started" &&
             journyData[0]?.journeyType === "Drop" ? (
             <div className="w-full">
-              <p className="pb-2 text-xl text-indigo-500">
+              {/* <p className="pb-2 text-xl text-indigo-500">
                 Ongoing {journyData[0]?.journeyType} Journey For,
-              </p>
+              </p> */}
               <p className="pb-2 text-2xl ">{journyData[0]?.vehicleNumber}</p>
               <form
                 onSubmit={handleSubmit2}
                 className="w-full max-w-md space-y-6"
               >
                 <div className="col-span-2 mb-6">
+                  <p className="font-bold">కార్ ఫోటోను అప్‌లోడ్ చేయండి**</p>
                   <p className="mb-2 text-[#6C63FF]">Upload Vehicle Photo*</p>
                   <div className="grid grid-cols-2 gap-2">
                     {["Final delivery to the customer"].map((label, index) => (
@@ -884,7 +905,10 @@ const User = () => {
                         />
                       </p>
                     ) : (
-                      "Handover Now"
+                      <>
+                        <p>ఇప్పుడు అప్పగించండి</p>
+                        <p> Handover Now</p>
+                      </>
                     )}
                   </button>
                 </div>
@@ -894,15 +918,16 @@ const User = () => {
             journyData[0]?.status === "Drive Started" &&
             journyData[0]?.journeyType === "Pickup" ? (
             <div className="w-full">
-              <p className="pb-2 text-xl text-indigo-500">
+              {/* <p className="pb-2 text-xl text-indigo-500">
                 Ongoing {journyData[0]?.journeyType} Journey For,
-              </p>
+              </p> */}
               <p className="pb-2 text-2xl ">{journyData[0]?.vehicleNumber}</p>
               <form
                 onSubmit={handleSubmit3}
                 className="w-full max-w-md space-y-6"
               >
                 <div className="col-span-2 mb-6">
+                  <p className="font-bold">కార్ ఫోటోను అప్‌లోడ్ చేయండి**</p>
                   <p className="mb-2 text-[#6C63FF]">Upload Vehicle Photo*</p>
                   <div className="grid grid-cols-2 gap-2">
                     {[
@@ -985,15 +1010,16 @@ const User = () => {
             journyData[0]?.status === "Picked up" &&
             journyData[0]?.journeyType === "Pickup" ? (
             <div className="w-full">
-              <p className="pb-2 text-xl text-indigo-500">
+              {/* <p className="pb-2 text-xl text-indigo-500">
                 End the {journyData[0]?.journeyType} Journey For,
-              </p>
+              </p> */}
               <p className="pb-2 text-2xl ">{journyData[0]?.vehicleNumber}</p>
               <form
                 onSubmit={handleSubmit4}
                 className="w-full max-w-md space-y-6"
               >
                 <div className="col-span-2 mb-6">
+                  <p className="font-bold">కార్ ఫోటోను అప్‌లోడ్ చేయండి**</p>
                   <p className="mb-2 text-[#6C63FF]">Upload Vehicle Photo*</p>
                   <div className="grid grid-cols-2 gap-2">
                     {["Final delivery to serivce center"].map(

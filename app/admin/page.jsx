@@ -147,6 +147,7 @@ const Dashboard = () => {
             },
             { field: "name", headerName: "Name", flex: 1 },
             { field: "phone", headerName: "Phone Number", flex: 1 },
+            { field: "totalDrives", headerName: "Total Drives ", flex: 0.5 },
 
             {
               field: "update",

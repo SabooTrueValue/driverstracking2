@@ -18,7 +18,6 @@ export function AppWrapper({ children }) {
       journeyData();
     }
     if (window.location.pathname === "/admin" && !isAdmin) {
-      
       window.location.href = "/login";
     }
   }, []);

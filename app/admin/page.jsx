@@ -149,19 +149,19 @@ const Dashboard = () => {
             { field: "phone", headerName: "Phone Number", flex: 1 },
             { field: "totalDrives", headerName: "Total Drives ", flex: 0.5 },
 
-            {
-              field: "update",
-              headerName: "Update",
-              flex: 0.5,
-              renderCell: (params) => (
-                <button
-                  onClick={() => handleUpdate(params.row.id)}
-                  className="px-2 py-1 text-blue-500 rounded"
-                >
-                  <GoPencil className="text-xl" />
-                </button>
-              ),
-            },
+            // {
+            //   field: "update",
+            //   headerName: "Update",
+            //   flex: 0.5,
+            //   renderCell: (params) => (
+            //     <button
+            //       onClick={() => handleUpdate(params.row.id)}
+            //       className="px-2 py-1 text-blue-500 rounded"
+            //     >
+            //       <GoPencil className="text-xl" />
+            //     </button>
+            //   ),
+            // },
             {
               field: "delete",
               headerName: "Delete",
@@ -226,29 +226,29 @@ const Dashboard = () => {
                 </div>
               ),
             },
-            {
-              field: "images",
-              headerName: "Images",
-              width: 150,
-              renderCell: (params) => (
-                <button
-                  onClick={() => handleShowImages(params.row.images)}
-                  className="py-1 text-blue-500 rounded "
-                >
-                  <div className="flex flex-col gap-3 px-2 overflow-y-scroll max-h-20 scroll-py-6">
-                    {params.row.images.map((image, index) => (
-                      <img
-                        key={index}
-                        src={image}
-                        alt={`Image ${index + 1}`}
-                        loading="lazy"
-                        className="w-20 rounded-lg"
-                      />
-                    ))}
-                  </div>
-                </button>
-              ),
-            },
+            // {
+            //   field: "images",
+            //   headerName: "Images",
+            //   width: 150,
+            //   renderCell: (params) => (
+            //     <button
+            //       onClick={() => handleShowImages(params.row.images)}
+            //       className="py-1 text-blue-500 rounded "
+            //     >
+            //       <div className="flex flex-col gap-3 px-2 overflow-y-scroll max-h-20 scroll-py-6">
+            //         {params.row.images.map((image, index) => (
+            //           <img
+            //             key={index}
+            //             src={image}
+            //             alt={`Image ${index + 1}`}
+            //             loading="lazy"
+            //             className="w-20 rounded-lg"
+            //           />
+            //         ))}
+            //       </div>
+            //     </button>
+            //   ),
+            // },
             { field: "driverName", headerName: "Driver Name", width: 150 },
             {
               field: "vehicleNumber",

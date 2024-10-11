@@ -677,6 +677,7 @@ const User = () => {
                     type="text"
                     required
                     maxLength={14}
+                    autoFocus
                     minLength={6}
                     autoComplete="off"
                     onChange={(e) => setVehicleNumber(e.target.value)}
@@ -719,7 +720,6 @@ const User = () => {
                     >
                       ఎలా వెళ్తున్నారు <br /> Transportation Method*
                     </label>
-                   
                     <select
                       className="w-full py-2.5 leading-tight focus:outline-none focus:shadow-outline bg-none border-b-2 text-sm bg-transparent border-b-black focus:bg-transparent uppercase"
                       id="modeOfTransport"

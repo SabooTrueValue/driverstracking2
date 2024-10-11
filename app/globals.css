@@ -2,7 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-
 /* Chrome, Edge, and Safari */
 *::-webkit-scrollbar {
   width: 8px;
@@ -14,7 +13,7 @@
   /* background: var(--primary); Adjust background color */
   /* border-radius: 10px; */
   background: transparent;
- /* background-color: rgb(230, 230, 230); */
+  /* background-color: rgb(230, 230, 230); */
 }
 
 *::-webkit-scrollbar-thumb {
@@ -23,4 +22,21 @@
   /* background-color: rgba(220 110 26); */
   border-radius: 4px;
   /* border: 2px solid white; */
+}
+
+form.file-upload-form {
+  @apply p-4;
+}
+form.file-upload-form input,
+form.file-upload-form button {
+  @apply block px-3 py-2 mb-4;
+}
+
+
+form.file-upload-form input {
+  @apply border-2 border-slate-300;
+}
+
+form.file-upload-form button {
+  @apply text-white bg-green-600 rounded-lg;
 }

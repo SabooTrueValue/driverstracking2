@@ -586,7 +586,6 @@ const handleFileChange = async (index, event) => {
           toast.error("Failed to update journey. Please try again later.");
         }
       } else {
-        toast.success("Testing2");
         console.log(images);
         const response = await axios.put(`/api/journey`, {
           status: detail,

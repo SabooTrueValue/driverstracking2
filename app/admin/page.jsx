@@ -226,29 +226,67 @@ const Dashboard = () => {
                 </div>
               ),
             },
-            // {
-            //   field: "images",
-            //   headerName: "Images",
-            //   width: 150,
-            //   renderCell: (params) => (
-            //     <button
-            //       onClick={() => handleShowImages(params.row.images)}
-            //       className="py-1 text-blue-500 rounded "
-            //     >
-            //       <div className="flex flex-col gap-3 px-2 overflow-y-scroll max-h-20 scroll-py-6">
-            //         {params.row.images.map((image, index) => (
-            //           <img
-            //             key={index}
-            //             src={image}
-            //             alt={`Image ${index + 1}`}
-            //             loading="lazy"
-            //             className="w-20 rounded-lg"
-            //           />
-            //         ))}
-            //       </div>
-            //     </button>
-            //   ),
-            // },
+            {
+              field: "images",
+              headerName: "Images",
+              width: 150,
+              renderCell: (params) => (
+                <button
+                  onClick={() => handleShowImages(params.row.images)}
+                  className="py-1 text-blue-500 rounded "
+                >
+                  <div className="flex flex-col gap-3 px-2 overflow-y-scroll max-h-20 scroll-py-6">
+                    {params.row.images.map((image, index) => (
+                      <img
+                        key={index}
+                        src={image}
+                        alt={`Image ${index + 1}`}
+                        loading="lazy"
+                        className="w-20 rounded-lg"
+                      />
+                    ))}
+                  </div>
+                </button>
+              ),
+            },
+            {
+              field: "images2",
+              headerName: "Images1",
+              width: 0,
+              hide: true,
+              renderCell: (params) => (
+               
+                  <div className="px-2 ">
+                    <img
+                      // key={index}
+                      src={params.row.images[0]}
+                      alt={`Image 0`}
+                      loading="lazy"
+                      className="w-20 rounded-lg"
+                    />
+                  </div>
+               
+              ),
+            },
+            {
+              field: "images3",
+              headerName: "Images2",
+              width: 0,
+              hide: true,
+              renderCell: (params) => (
+               
+                  <div className="px-2 ">
+                    <img
+                      // key={index}
+                      src={params.row.images[1]}
+                      alt={`Image 0`}
+                      loading="lazy"
+                      className="w-20 rounded-lg"
+                    />
+                  </div>
+               
+              ),
+            },
             { field: "driverName", headerName: "Driver Name", width: 150 },
             {
               field: "vehicleNumber",

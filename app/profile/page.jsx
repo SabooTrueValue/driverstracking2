@@ -528,7 +528,7 @@ const handleFileChange = async (index, event) => {
       setLoading(false);
     }
   };
-
+ 
   const updateJourney = async ({
     formattedLocation,
     lat,

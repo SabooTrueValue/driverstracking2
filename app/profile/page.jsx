@@ -10,6 +10,7 @@ import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { FirebaseStorage } from "@/lib/firebase";
 import axios from "axios";
 import { useAppContext } from "@/context";
+import imageCompression from "browser-image-compression";
 // import { FirebaseStorage, FirebaseStore } from "@/lib/firebase";
 
 const User = () => {
@@ -55,12 +56,38 @@ const User = () => {
     return `${hours12}:${minutes.toString().padStart(2, "0")} ${period}`;
   };
 
-  const handleFileChange = (index, event) => {
-    const file = event.target.files?.[0] || null;
-    const newImages = [...images];
-    newImages[index] = file;
-    setImages(newImages);
+  const compressImage = async (file) => {
+    const options = {
+      maxSizeMB: 0.5, // Max size of the file in MB (500KB)
+      maxWidthOrHeight: 1920, // Resize image to width/height if necessary
+      useWebWorker: true, // Speed up compression
+    };
+
+    try {
+      const compressedFile = await imageCompression(file, options);
+      return compressedFile;
+    } catch (error) {
+      console.log("Error while compressing the image", error);
+      throw error;
+    }
   };
+  
+const handleFileChange = async (index, event) => {
+  const file = event.target.files?.[0] || null;
+
+  if (file) {
+    try {
+      const compressedFile = await compressImage(file);
+      const newImages = [...images];
+      newImages[index] = compressedFile; // Use the compressed file
+      setImages(newImages);
+    } catch (error) {
+      console.error("Error compressing the image", error);
+    }
+  } else {
+    console.log("No file selected");
+  }
+};
 
   const getImagePreviewUrl = (index) => {
     const file = images[index];
@@ -371,7 +398,7 @@ const User = () => {
               };
 
               if (type === "Update") {
-                updateJourney(locationData, images);
+                updateJourney({ ...locationData, images, detail });
               } else if (type === "Start" && pickupOrDrop === "Drop") {
                 startJourney({
                   ...locationData,
@@ -559,6 +586,8 @@ const User = () => {
           toast.error("Failed to update journey. Please try again later.");
         }
       } else {
+        toast.success("Testing2");
+        console.log(images);
         const response = await axios.put(`/api/journey`, {
           status: detail,
           image: images?.length > 1 ? images : images[0],

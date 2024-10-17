@@ -1,20 +1,20 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { AiOutlineFileSearch, AiOutlineMenu } from "react-icons/ai";
+import { AiOutlineClose, AiOutlineFileSearch, AiOutlineMenu } from "react-icons/ai";
 import { BsPeople } from "react-icons/bs";
 import { BiHomeAlt2 } from "react-icons/bi";
 import SidePanel from "@/components/SidePanel";
 import AdminHome from "@/components/AdminHome";
-import DrivesDetails from "@/components/DrivesDetails";
 import DriversData from "@/components/DriversData";
 import { useAppContext } from "@/context";
 import axios from "axios";
 import toast from "react-hot-toast";
 import DrivesData from "@/components/DrivesData";
-import { GridRowParams } from "@mui/x-data-grid";
+import { GrLinkNext } from "react-icons/gr";
 import { MdDelete } from "react-icons/md";
-import { GoPencil } from "react-icons/go";
+
 import { FiRefreshCw } from "react-icons/fi";
+import { FaExternalLinkAlt } from "react-icons/fa";
 
 const Dashboard = () => {
   const [open, setOpen] = useState(false);
@@ -28,6 +28,9 @@ const Dashboard = () => {
   const [totalJourney, setTotalJourney] = useState(0);
   const [totalAvailableDriver, setTotalAvailableDriver] = useState(0);
   const [totalUnavailble, setTotalUnavailable] = useState(0);
+  const [imgCol, setImgCol] = useState(null);
+  const [currentIndex, setCurrentIndex] = useState(0);
+
 
   const {
     driverData,
@@ -91,7 +94,9 @@ const Dashboard = () => {
   const handleShowImages = async (img) => {
     console.log(img);
     toast.success("Showing images");
-    return null
+
+    setImgCol(img);
+    return null;
   };
 
   useEffect(() => {
@@ -229,28 +234,22 @@ const Dashboard = () => {
             {
               field: "images",
               headerName: "Images",
-              width: 150,
-              renderCell: (params) => (
-                <button
-                  onClick={() => handleShowImages(params.row.images)}
-                  className="py-1 text-blue-500 rounded "
-                >
-                  <div className="flex flex-col gap-3 px-2 overflow-y-scroll max-h-20 scroll-py-6">
-                    {params.row.images.map((image, index) => (
-                      <img
-                        key={index}
-                        src={image}
-                        alt={`Image ${index + 1}`}
-                        loading="lazy"
-                        className="w-20 rounded-lg"
-                      />
-                    ))}
-                  </div>
-                </button>
-              ),
+              width: 120,
+              renderCell: (params) =>
+                params.row.images?.length ? (
+                  <button
+                    onClick={() => handleShowImages(params.row.images)}
+                    className="py-1"
+                  >
+                    <div className="flex justify-center min-w-12">
+                      <FaExternalLinkAlt className="mx-auto text-xl" />
+                    </div>
+                  </button>
+                ) : (
+                  <p>No Image</p>
+                ),
             },
-            
-           
+
             { field: "driverName", headerName: "Driver Name", width: 150 },
             {
               field: "vehicleNumber",
@@ -351,6 +350,67 @@ const Dashboard = () => {
           ) : null}
         </div>
       </div>
+      {imgCol && (
+        <div className="absolute top-0 left-0 w-2/3 h-2/3 bg-gray-50 translate-x-[33%] translate-y-[33%] rounded-lg shadow-lg">
+          <div className="relative w-full h-full">
+            <button
+              onClick={() => setImgCol(null)}
+              className="absolute top-0 right-0 p-2"
+            >
+              <AiOutlineClose className="text-4xl text-red-600" />
+            </button>
+
+            {imgCol.length > 0 && (
+              <img
+                src={imgCol[currentIndex]}
+                className="object-cover w-full h-full rounded-lg"
+                alt={`Image ${currentIndex + 1}`}
+              />
+            )}
+
+            <button
+              onClick={() =>
+                setCurrentIndex((prev) =>
+                  prev > 0 ? prev - 1 : imgCol.length - 1
+                )
+              }
+              className="absolute p-2 transform -translate-y-1/2 bg-white rounded-full shadow-lg left-2 top-1/2"
+            >
+              <GrLinkNext className="rotate-180" />
+            </button>
+
+            <button
+              onClick={() =>
+                setCurrentIndex((prev) =>
+                  prev < imgCol.length - 1 ? prev + 1 : 0
+                )
+              }
+              className="absolute p-2 transform -translate-y-1/2 bg-white rounded-full shadow-lg right-2 top-1/2"
+            >
+              <GrLinkNext />
+            </button>
+            {/* <button
+              onClick={() => {
+                const link = document.createElement("a");
+                link.href = imgCol[currentIndex];
+                link.download = `image-${currentIndex + 1}`; // Customize the filename as needed
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+              }}
+              className="absolute p-2 px-4 text-sm text-white transform bg-blue-500 rounded-full shadow-lg left-4 top-4"
+            >
+              Download
+            </button> */}
+            <button
+              onClick={() => window.open(imgCol[currentIndex], "_blank")}
+              className="absolute p-2 px-4 text-sm text-white transform bg-blue-600 rounded-full shadow-lg left-4 top-4"
+            >
+              Open in New Tab
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

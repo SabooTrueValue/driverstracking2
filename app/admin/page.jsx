@@ -351,19 +351,12 @@ const Dashboard = () => {
         </div>
       </div>
       {imgCol && (
-        <div className="absolute top-0 left-0 w-2/3 h-2/3 bg-gray-50 translate-x-[33%] translate-y-[33%] rounded-lg shadow-lg">
-          <div className="relative w-full h-full">
-            <button
-              onClick={() => setImgCol(null)}
-              className="absolute top-0 right-0 p-2"
-            >
-              <AiOutlineClose className="text-4xl text-red-600" />
-            </button>
-
+        <div className="absolute top-0 left-0 w-2/3 h-2/3 bg-white translate-x-[33%] translate-y-[33%] rounded-lg shadow-lg overflow-hidden">
+          <div className="relative w-full h-full ">
             {imgCol.length > 0 && (
               <img
                 src={imgCol[currentIndex]}
-                className="object-cover w-full h-full rounded-lg"
+                className="object-cover h-full mx-auto "
                 alt={`Image ${currentIndex + 1}`}
               />
             )}
@@ -374,9 +367,9 @@ const Dashboard = () => {
                   prev > 0 ? prev - 1 : imgCol.length - 1
                 )
               }
-              className="absolute p-2 transform -translate-y-1/2 bg-white rounded-full shadow-lg left-2 top-1/2"
+              className="absolute left-0 h-full transform -translate-y-1/2   bg-gradient-to-r  min-w-20 top-1/2 duration-500 from-[#56565624] hover:from-[#56565677] "
             >
-              <GrLinkNext className="rotate-180" />
+              <GrLinkNext className="mx-auto rotate-180" />
             </button>
 
             <button
@@ -385,9 +378,9 @@ const Dashboard = () => {
                   prev < imgCol.length - 1 ? prev + 1 : 0
                 )
               }
-              className="absolute p-2 transform -translate-y-1/2 bg-white rounded-full shadow-lg right-2 top-1/2"
+              className="absolute p-2 transform -translate-y-1/2  right-0 top-1/2  bg-gradient-to-l from-[#56565624] hover:from-[#56565677]  min-w-20  duration-500 h-full "
             >
-              <GrLinkNext />
+              <GrLinkNext className="mx-auto" />
             </button>
             {/* <button
               onClick={() => {
@@ -407,6 +400,12 @@ const Dashboard = () => {
               className="absolute p-2 px-4 text-sm text-white transform bg-blue-600 rounded-full shadow-lg left-4 top-4"
             >
               Open in New Tab
+            </button>
+            <button
+              onClick={() => setImgCol(null)}
+              className="absolute top-0 right-0 p-2 "
+            >
+              <AiOutlineClose className="text-4xl text-red-600 " />
             </button>
           </div>
         </div>
